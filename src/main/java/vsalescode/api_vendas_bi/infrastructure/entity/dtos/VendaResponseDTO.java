@@ -1,4 +1,4 @@
-package entity.dtos;
+package vsalescode.api_vendas_bi.infrastructure.entity.dtos;
 
 
 import lombok.*;

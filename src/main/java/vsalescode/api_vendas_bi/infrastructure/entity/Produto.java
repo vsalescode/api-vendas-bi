@@ -1,4 +1,4 @@
-package entity;
+package vsalescode.api_vendas_bi.infrastructure.entity;
 
 
 import jakarta.persistence.*;

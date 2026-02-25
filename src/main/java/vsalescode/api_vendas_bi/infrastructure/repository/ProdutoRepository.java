@@ -1,6 +1,6 @@
-package repository;
+package vsalescode.api_vendas_bi.infrastructure.repository;
 
-import entity.Produto;
+import vsalescode.api_vendas_bi.infrastructure.entity.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
