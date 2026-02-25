@@ -55,12 +55,15 @@ public class VendaService {
 
     public VendaResponseDTO buscarPorId(Long id) {
         Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada"));
 
         return vendaMapper.toResponseDTO(venda);
     }
 
     public void deletar(Long id) {
-        vendaRepository.deleteById(id);
+        Venda venda = vendaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada"));
+
+        vendaRepository.delete(venda);
     }
 }
