@@ -2,6 +2,8 @@ package entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -23,8 +25,8 @@ public class Venda {
     @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(nullable = false)
-    private Double valorTotal;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorTotal;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id")
