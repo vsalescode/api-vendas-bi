@@ -2,6 +2,7 @@ package vsalescode.api_vendas_bi.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import vsalescode.api_vendas_bi.infrastructure.entity.Cliente;
 import vsalescode.api_vendas_bi.infrastructure.entity.Produto;
@@ -13,7 +14,9 @@ import vsalescode.api_vendas_bi.infrastructure.repository.ClienteRepository;
 import vsalescode.api_vendas_bi.infrastructure.repository.ProdutoRepository;
 import vsalescode.api_vendas_bi.infrastructure.repository.VendaRepository;
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
+
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +51,11 @@ public class VendaService {
         return vendaMapper.toResponseDTO(vendaSalva);
     }
 
-    public List<VendaResponseDTO> listarTodas() {
-        List<Venda> vendas = vendaRepository.findAll();
-        return vendaMapper.toResponseList(vendas);
+    public Page<VendaResponseDTO> listar(Pageable pageable) {
+
+        Page<Venda> pageVendas = vendaRepository.findAll(pageable);
+
+        return pageVendas.map(vendaMapper::toResponseDTO);
     }
 
     public VendaResponseDTO buscarPorId(Long id) {
@@ -58,6 +63,21 @@ public class VendaService {
                 .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada"));
 
         return vendaMapper.toResponseDTO(venda);
+    }
+
+    public Page<VendaResponseDTO> listarPorPeriodo(
+            LocalDate dataInicio,
+            LocalDate dataFim,
+            Pageable pageable) {
+
+        if (dataInicio.isAfter(dataFim)) {
+            throw new IllegalArgumentException("Data início não pode ser maior que data fim");
+        }
+
+        Page<Venda> page = vendaRepository
+                .findByDataBetween(dataInicio, dataFim, pageable);
+
+        return page.map(vendaMapper::toResponseDTO);
     }
 
     public void deletar(Long id) {
