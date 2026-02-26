@@ -17,9 +17,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class VendaService {
 
     private final VendaRepository vendaRepository;
@@ -51,6 +53,7 @@ public class VendaService {
         return vendaMapper.toResponseDTO(vendaSalva);
     }
 
+    @Transactional(readOnly = true)
     public Page<VendaResponseDTO> listar(Pageable pageable) {
 
         Page<Venda> pageVendas = vendaRepository.findAll(pageable);
@@ -58,6 +61,7 @@ public class VendaService {
         return pageVendas.map(vendaMapper::toResponseDTO);
     }
 
+    @Transactional(readOnly = true)
     public VendaResponseDTO buscarPorId(Long id) {
         Venda venda = vendaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada"));
@@ -65,6 +69,7 @@ public class VendaService {
         return vendaMapper.toResponseDTO(venda);
     }
 
+    @Transactional(readOnly = true)
     public Page<VendaResponseDTO> listarPorPeriodo(
             LocalDate dataInicio,
             LocalDate dataFim,
@@ -81,9 +86,10 @@ public class VendaService {
     }
 
     public void deletar(Long id) {
-        Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada"));
+        if (!vendaRepository.existsById(id)) {
+            throw new IllegalArgumentException("Venda não encontrada");
+        }
 
-        vendaRepository.delete(venda);
+        vendaRepository.deleteById(id);
     }
 }

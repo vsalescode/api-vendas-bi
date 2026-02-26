@@ -7,7 +7,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vendas")
+@Table(
+        name = "vendas",
+        indexes = {
+                @Index(name = "idx_vendas_data", columnList = "data"),
+                @Index(name = "idx_vendas_cliente", columnList = "cliente_id"),
+                @Index(name = "idx_vendas_produto", columnList = "produto_id")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,11 +35,11 @@ public class Venda {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "produto_id")
     private Produto produto;
 }
